@@ -1,5 +1,5 @@
 [project]
-name = "RADIO_APP"
+name = "RADIO APP"
 version = "0.0.0.1"
 description = "Universal Radio"
 dependencies = [
@@ -10,8 +10,8 @@ dependencies = [
 
 [tool.flet]
 org = "com.offpolice"
-project = "RADIO_APP"
-product = "RADIO_APP"
+project = "RADIO APP"
+product = "RADIO APP"
 
 [tool.flet.android]
 min_sdk_version = 24
