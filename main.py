@@ -422,7 +422,7 @@ def main(page: ft.Page):
             ft.Container(
                 content=ft.Column(
                     [
-                        ft.Text("Связь с разработчикам", size=14, weight="bold"),
+                        ft.Text("Связь с разработчиком", size=14, weight="bold"),
                         ft.Container(
                             content=ft.Row(
                                 [ft.Icon(ft.Icons.SEND, color=ACCENT, size=20), ft.Text("Telegram — @OFFpolice", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
@@ -436,7 +436,7 @@ def main(page: ft.Page):
                         ),
                         ft.Container(
                             content=ft.Row(
-                                [ft.Icon(ft.Icons.SEND, color=ACCENT, size=20), ft.Text("Twitter/X — @OFFpolice2077", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
+                                [ft.Icon(ft.Icons.SEND, color=ACCENT, size=20), ft.Text("X (Twitter) — @OFFpolice2077", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
                                 spacing=12,
                             ),
                             padding=ft.padding.symmetric(horizontal=15, vertical=12),
