@@ -60,7 +60,7 @@ def save_favorites(favs: list[dict]):
 
 
 def main(page: ft.Page):
-    page.title = "RADIO"
+    page.title = "RADIO APP"
     page.bgcolor = BG
     page.theme_mode = ft.ThemeMode.DARK
     page.padding = 0
@@ -396,7 +396,7 @@ def main(page: ft.Page):
                                 ),
                                 ft.Column(
                                     [
-                                        ft.Text("RADIO", size=20, weight="bold"),
+                                        ft.Text("RADIO APP", size=20, weight="bold"),
                                         ft.Text("by OFFpolice", size=12, color=MUTED),
                                     ],
                                     spacing=2,
@@ -406,7 +406,7 @@ def main(page: ft.Page):
                         ),
                         ft.Divider(color=BORDER),
                         ft.Text(
-                            "RADIO — приложение для прослушивания интернет-радиостанций со всего мира. "
+                            "RADIO APP — приложение для прослушивания интернет-радиостанций со всего мира. "
                             "Поиск по названию, фильтрация по жанру, избранные станции.",
                             size=13,
                             color=MUTED,
@@ -422,7 +422,7 @@ def main(page: ft.Page):
             ft.Container(
                 content=ft.Column(
                     [
-                        ft.Text("Разработчик", size=14, weight="bold"),
+                        ft.Text("Связь с разработчикам", size=14, weight="bold"),
                         ft.Container(
                             content=ft.Row(
                                 [ft.Icon(ft.Icons.SEND, color=ACCENT, size=20), ft.Text("Telegram — @OFFpolice", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
@@ -436,7 +436,7 @@ def main(page: ft.Page):
                         ),
                         ft.Container(
                             content=ft.Row(
-                                [ft.Icon(ft.Icons.ALTERNATE_EMAIL, color=ACCENT, size=20), ft.Text("Twitter/X — @OFFpolice2077", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
+                                [ft.Icon(ft.Icons.SEND, color=ACCENT, size=20), ft.Text("Twitter/X — @OFFpolice2077", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
                                 spacing=12,
                             ),
                             padding=ft.padding.symmetric(horizontal=15, vertical=12),
@@ -447,7 +447,7 @@ def main(page: ft.Page):
                         ),
                         ft.Container(
                             content=ft.Row(
-                                [ft.Icon(ft.Icons.CAMERA_ALT, color=ACCENT, size=20), ft.Text("Instagram — @OFFpolice2077", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
+                                [ft.Icon(ft.Icons.SEND, color=ACCENT, size=20), ft.Text("Instagram — @OFFpolice2077", size=13, expand=True), ft.Icon(ft.Icons.OPEN_IN_NEW, color=MUTED, size=16)],
                                 spacing=12,
                             ),
                             padding=ft.padding.symmetric(horizontal=15, vertical=12),
@@ -474,15 +474,15 @@ def main(page: ft.Page):
 
     header_title = ft.Row(
         [
-            ft.Text("R", size=28, weight="bold", color=ACCENT),
-            ft.Text("ADIO", size=28, weight="bold"),
+            ft.Text("RADIO", size=28, weight="bold", color=ACCENT),
+            ft.Text("APP", size=28, weight="bold"),
         ]
     )
     header = ft.Row([header_title], alignment=ft.MainAxisAlignment.START)
 
     nav = ft.NavigationBar(
         destinations=[
-            ft.NavigationBarDestination(icon=ft.Icons.SEARCH, label="Поиск"),
+            ft.NavigationBarDestination(icon=ft.Icons.RADIO_OUTLINED, label="Радио"),
             ft.NavigationBarDestination(icon=ft.Icons.FAVORITE, label="Избранное"),
             ft.NavigationBarDestination(icon=ft.Icons.INFO_OUTLINE, label="О нас"),
         ],
