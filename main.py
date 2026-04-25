@@ -2,6 +2,7 @@ import threading
 import json
 
 import flet as ft
+import flet_audio as fta
 from pyradios import RadioBrowser
 
 BG = "#0b0f1a"
@@ -71,12 +72,36 @@ def main(page: ft.Page):
     selected_category: list[str] = [""]
     current_page: list[int] = [0]
 
-    audio = ft.Audio(src="", autoplay=False, volume=1.0)
+    audio = fta.Audio(
+        src="",
+        autoplay=False,
+        volume=1.0,
+        on_state_changed=lambda e: on_audio_state(e),
+    )
     page.overlay.append(audio)
 
     def show_snackbar(msg: str):
         page.snack_bar = ft.SnackBar(ft.Text(msg), open=True)
         page.update()
+
+    def on_audio_state(e):
+        state = str(e.data).lower() if hasattr(e, "data") else ""
+        if "playing" in state:
+            is_playing[0] = True
+            play_btn.icon = ft.Icons.PAUSE_CIRCLE
+        elif any(x in state for x in ("stopped", "completed", "idle", "none")):
+            is_playing[0] = False
+            play_btn.icon = ft.Icons.PLAY_CIRCLE
+        page.update()
+
+    async def do_play():
+        await audio.play_async()
+
+    async def do_pause():
+        await audio.pause_async()
+
+    async def do_resume():
+        await audio.resume_async()
 
     def is_favorite(station: dict) -> bool:
         return any(f.get("stationuuid") == station.get("stationuuid") for f in favorites)
@@ -104,37 +129,38 @@ def main(page: ft.Page):
             show_snackbar("У станции нет URL потока")
             return
         current_station = station
-        try:
-            audio.src = url
-            audio.autoplay = True
-            is_playing[0] = True
-            play_btn.icon = ft.Icons.PAUSE_CIRCLE
-        except Exception as ex:
-            show_snackbar(f"Ошибка воспроизведения: {ex}")
+
+        play_btn.icon = ft.Icons.OPEN_IN_BROWSER
         update_player(station)
+        page.launch_url(url)
 
     def toggle_play(e):
         if current_station is None:
             show_snackbar("Сначала выберите станцию")
             return
-        if is_playing[0]:
-            try:
-                audio.pause()
-            except Exception:
-                pass
-            is_playing[0] = False
-            play_btn.icon = ft.Icons.PLAY_CIRCLE
-        else:
-            try:
-                audio.resume()
-            except Exception:
-                url = current_station.get("url", "")
-                if url:
-                    audio.src = url
-                    audio.autoplay = True
-            is_playing[0] = True
-            play_btn.icon = ft.Icons.PAUSE_CIRCLE
-        page.update()
+
+        async def run():
+            if is_playing[0]:
+                try:
+                    await do_pause()
+                except Exception:
+                    pass
+                is_playing[0] = False
+                play_btn.icon = ft.Icons.PLAY_CIRCLE
+            else:
+                try:
+                    await do_resume()
+                except Exception:
+                    url = current_station.get("url", "")
+                    if url:
+                        audio.src = url
+                        page.update()
+                        await do_play()
+                is_playing[0] = True
+                play_btn.icon = ft.Icons.PAUSE_CIRCLE
+            page.update()
+
+        page.run_task(run)
 
     def update_player(station: dict | None):
         if station is None:
