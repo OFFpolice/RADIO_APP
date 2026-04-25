@@ -1,0 +1,40 @@
+[project]
+name = "RADIO_APP"
+version = "0.0.0.1"
+description = "Universal Radio"
+dependencies = [
+    "flet>=0.84.0",
+    "flet-permission-handler>=0.84.0",
+    "yt-dlp>=2026.3.17"
+]
+
+[tool.flet]
+org = "com.offpolice"
+project = "RADIO_APP"
+product = "RADIO_APP"
+
+[tool.flet.android]
+min_sdk_version = 24
+target_sdk_version = 34
+adaptive_icon_background = "#000000"
+adaptive_icon_foreground = "assets/icon.png"
+
+[tool.flet.android.permission]
+"android.permission.INTERNET" = true
+"android.permission.READ_EXTERNAL_STORAGE" = true
+"android.permission.WRITE_EXTERNAL_STORAGE" = true
+"android.permission.MANAGE_EXTERNAL_STORAGE" = true
+"android.permission.READ_MEDIA_VIDEO" = true
+"android.permission.ACCESS_MEDIA_LOCATION" = true
+"android.permission.REQUEST_INSTALL_PACKAGES" = true
+"android.permission.POST_NOTIFICATIONS" = true
+
+[tool.flet.android.uses_permission]
+"android.permission.MANAGE_EXTERNAL_STORAGE" = true
+
+[tool.flet.app]
+module = "main.py"
+
+[tool.flet.android.app.startup_screen]
+show = true
+message = "Запуск приложения..."
