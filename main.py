@@ -76,23 +76,9 @@ def main(page: ft.Page):
         page.update()
 
     def is_fav(station: dict) -> bool:
-        return any(f.get("stationuuid") == station.get("stationuuid") for f in favorites)
-
-    def toggle_favorite(station: dict):
-        uuid = station.get("stationuuid")
-        existing = next((f for f in favorites if f.get("stationuuid") == uuid), None)
-        if existing:
-            favorites.remove(existing)
-            show_snackbar("Удалено из избранного")
-        else:
-            favorites.insert(0, station)
-            show_snackbar("Добавлено в избранное")
-        save_favorites(favorites)
-        if current_station and current_station.get("stationuuid") == uuid:
-            player_fav_btn.icon = ft.Icons.FAVORITE if is_fav(station) else ft.Icons.FAVORITE_BORDER
-            page.update()
-        if current_page[0] == 1:
-            show_favorites_page()
+        return any(
+            f.get("stationuuid") == station.get("stationuuid") for f in favorites
+        )
 
     def on_audio_state_change(e):
         state = str(e.data).lower() if hasattr(e, "data") and e.data else ""
@@ -125,6 +111,26 @@ def main(page: ft.Page):
     async def _release():
         await audio.release_async()
 
+    def toggle_favorite(station: dict):
+        uuid = station.get("stationuuid")
+        existing = next(
+            (f for f in favorites if f.get("stationuuid") == uuid), None
+        )
+        if existing:
+            favorites.remove(existing)
+            show_snackbar("Удалено из избранного")
+        else:
+            favorites.insert(0, station)
+            show_snackbar("Добавлено в избранное")
+        save_favorites(favorites)
+        if current_station and current_station.get("stationuuid") == uuid:
+            player_fav_btn.icon = (
+                ft.Icons.FAVORITE if is_fav(station) else ft.Icons.FAVORITE_BORDER
+            )
+            page.update()
+        if current_page[0] == 1:
+            show_favorites_page()
+
     def play_station(station: dict):
         nonlocal current_station
         url = station.get("url", "")
@@ -133,9 +139,13 @@ def main(page: ft.Page):
             return
         current_station = station
         player_name.value = station.get("name", "—")
-        parts = [p for p in [station.get("country", ""), station.get("codec", "")] if p]
+        parts = [
+            p for p in [station.get("country", ""), station.get("codec", "")] if p
+        ]
         player_sub.value = " · ".join(parts) if parts else "Онлайн"
-        player_fav_btn.icon = ft.Icons.FAVORITE if is_fav(station) else ft.Icons.FAVORITE_BORDER
+        player_fav_btn.icon = (
+            ft.Icons.FAVORITE if is_fav(station) else ft.Icons.FAVORITE_BORDER
+        )
         play_btn.icon = ft.Icons.PAUSE_CIRCLE
         page.update()
 
@@ -146,7 +156,7 @@ def main(page: ft.Page):
                 page.update()
                 await _play()
             except Exception as ex:
-                page.call_from_thread(lambda: show_snackbar(f"Ошибка: {ex}"))
+                show_snackbar(f"Ошибка воспроизведения: {ex}")
 
         page.run_task(start)
 
@@ -190,7 +200,9 @@ def main(page: ft.Page):
         icon=ft.Icons.FAVORITE_BORDER,
         icon_color=ACCENT,
         icon_size=20,
-        on_click=lambda e: toggle_favorite(current_station) if current_station else None,
+        on_click=lambda e: toggle_favorite(current_station)
+        if current_station
+        else None,
     )
 
     player_bar = ft.Container(
@@ -209,7 +221,8 @@ def main(page: ft.Page):
                     icon_size=20,
                     tooltip="Сайт станции",
                     on_click=lambda e: page.launch_url(current_station["homepage"])
-                    if current_station and current_station.get("homepage") else None,
+                    if current_station and current_station.get("homepage")
+                    else None,
                 ),
                 play_btn,
             ],
@@ -228,7 +241,8 @@ def main(page: ft.Page):
         tags = station.get("tags", "")
         tags_short = (
             ", ".join(t.strip() for t in tags.split(",")[:3] if t.strip())
-            if tags else ""
+            if tags
+            else ""
         )
         meta_parts = [p for p in [country, language, codec] if p]
         meta_str = " · ".join(meta_parts)
@@ -272,14 +286,18 @@ def main(page: ft.Page):
                                 color=MUTED,
                                 no_wrap=True,
                                 max_lines=1,
-                            ) if meta_str else ft.Container(height=0),
+                            )
+                            if meta_str
+                            else ft.Container(height=0),
                             ft.Text(
                                 tags_short,
                                 size=10,
                                 color="#4b5563",
                                 no_wrap=True,
                                 max_lines=1,
-                            ) if tags_short else ft.Container(height=0),
+                            )
+                            if tags_short
+                            else ft.Container(height=0),
                         ],
                         spacing=2,
                         expand=True,
@@ -354,7 +372,9 @@ def main(page: ft.Page):
                 items = [dict(r) if not isinstance(r, dict) else r for r in results]
                 page.call_from_thread(lambda i=items: set_stations(i))
             except Exception as ex:
-                page.call_from_thread(lambda: show_snackbar(f"Ошибка загрузки: {ex}"))
+                page.call_from_thread(
+                    lambda: show_snackbar(f"Ошибка загрузки: {ex}")
+                )
                 page.call_from_thread(lambda: set_stations([]))
 
         threading.Thread(target=run, daemon=True).start()
@@ -501,7 +521,9 @@ def main(page: ft.Page):
                         ft.Row(
                             [
                                 ft.Container(
-                                    content=ft.Icon(ft.Icons.RADIO, color="white", size=30),
+                                    content=ft.Icon(
+                                        ft.Icons.RADIO, color="white", size=30
+                                    ),
                                     width=64,
                                     height=64,
                                     bgcolor=ACCENT,
@@ -510,8 +532,12 @@ def main(page: ft.Page):
                                 ),
                                 ft.Column(
                                     [
-                                        ft.Text("RADIO APP", size=20, weight="bold"),
-                                        ft.Text("by OFFpolice", size=12, color=MUTED),
+                                        ft.Text(
+                                            "RADIO APP", size=20, weight="bold"
+                                        ),
+                                        ft.Text(
+                                            "by OFFpolice", size=12, color=MUTED
+                                        ),
                                     ],
                                     spacing=2,
                                 ),
@@ -521,7 +547,8 @@ def main(page: ft.Page):
                         ft.Divider(color=BORDER),
                         ft.Text(
                             "RADIO APP — приложение для прослушивания интернет-радиостанций "
-                            "со всего мира. Поиск по названию, фильтрация по жанру, избранные станции.",
+                            "со всего мира. Поиск по названию, фильтрация по жанру, "
+                            "избранные станции.",
                             size=13,
                             color=MUTED,
                         ),
@@ -537,9 +564,21 @@ def main(page: ft.Page):
                 content=ft.Column(
                     [
                         ft.Text("Разработчик", size=14, weight="bold"),
-                        make_link(ft.Icons.SEND, "Telegram — @OFFpolice", "https://t.me/OFFpolice"),
-                        make_link(ft.Icons.ALTERNATE_EMAIL, "Twitter/X — @OFFpolice2077", "https://x.com/OFFpolice2077"),
-                        make_link(ft.Icons.CAMERA_ALT, "Instagram — @OFFpolice2077", "https://instagram.com/OFFpolice2077"),
+                        make_link(
+                            ft.Icons.SEND,
+                            "Telegram — @OFFpolice",
+                            "https://t.me/OFFpolice",
+                        ),
+                        make_link(
+                            ft.Icons.ALTERNATE_EMAIL,
+                            "Twitter/X — @OFFpolice2077",
+                            "https://x.com/OFFpolice2077",
+                        ),
+                        make_link(
+                            ft.Icons.CAMERA_ALT,
+                            "Instagram — @OFFpolice2077",
+                            "https://instagram.com/OFFpolice2077",
+                        ),
                     ],
                     spacing=10,
                 ),
@@ -569,9 +608,15 @@ def main(page: ft.Page):
 
     nav = ft.NavigationBar(
         destinations=[
-            ft.NavigationBarDestination(icon=ft.Icons.RADIO_OUTLINED, label="Радио"),
-            ft.NavigationBarDestination(icon=ft.Icons.FAVORITE, label="Избранное"),
-            ft.NavigationBarDestination(icon=ft.Icons.INFO_OUTLINE, label="О нас"),
+            ft.NavigationBarDestination(
+                icon=ft.Icons.RADIO_OUTLINED, label="Радио"
+            ),
+            ft.NavigationBarDestination(
+                icon=ft.Icons.FAVORITE, label="Избранное"
+            ),
+            ft.NavigationBarDestination(
+                icon=ft.Icons.INFO_OUTLINE, label="О нас"
+            ),
         ],
         bgcolor=CARD,
         on_change=lambda e: show_page(e.control.selected_index),
@@ -590,10 +635,10 @@ def main(page: ft.Page):
         page.update()
 
     page.add(
-        ft.Column(
-            [
-                ft.SafeArea(
-                    content=ft.Container(
+        ft.SafeArea(
+            content=ft.Column(
+                [
+                    ft.Container(
                         content=ft.Column(
                             [header, body],
                             spacing=15,
@@ -602,11 +647,11 @@ def main(page: ft.Page):
                         padding=ft.padding.only(left=20, right=20, top=20),
                         expand=True,
                     ),
-                    expand=True,
-                ),
-                player_bar,
-            ],
-            spacing=0,
+                    player_bar,
+                ],
+                spacing=0,
+                expand=True,
+            ),
             expand=True,
         )
     )
