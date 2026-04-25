@@ -5,7 +5,7 @@ description = "Universal Radio"
 dependencies = [
     "flet>=0.84.0",
     "flet-permission-handler>=0.84.0",
-    "yt-dlp>=2026.3.17"
+    "pyradios>=2.1.1"
 ]
 
 [tool.flet]
